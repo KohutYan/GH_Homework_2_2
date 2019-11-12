@@ -1,6 +1,11 @@
 package com.kohutyan.gh_homework
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import android.content.Context
+import android.graphics.BitmapFactory
 import com.kohutyan.gh_homework.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_website_list.*
 import kotlinx.android.synthetic.main.website_list_content.view.*
@@ -23,6 +29,38 @@ class WebsiteListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_website_list)
+        lateinit var notificationManager : NotificationManager
+        lateinit var notificationChannel : NotificationChannel
+        lateinit var builder : Notification.Builder
+        val channelId = "com.kohutyan.gh_homework"
+        val description =  "Notification"
+
+        notBut.setOnClickListener{
+
+            val intent = Intent(this,WebsiteListActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+
+            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notificationChannel = NotificationChannel(channelId,description,NotificationManager.IMPORTANCE_HIGH)
+                notificationChannel.enableVibration(true)
+                notificationManager.createNotificationChannel(notificationChannel)
+
+                builder = Notification.Builder(this,channelId)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setLargeIcon(BitmapFactory.decodeResource(this.resources,R.mipmap.ic_launcher_round))
+                    .setContentIntent(pendingIntent)
+            }else{
+
+                builder = Notification.Builder(this)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setLargeIcon(BitmapFactory.decodeResource(this.resources,R.mipmap.ic_launcher_round))
+                    .setContentIntent(pendingIntent)
+            }
+            notificationManager.notify(1234,builder.build())
+        }
+
 
         setSupportActionBar(toolbar)
         toolbar.title = title
