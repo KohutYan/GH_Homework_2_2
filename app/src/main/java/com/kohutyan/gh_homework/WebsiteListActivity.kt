@@ -4,22 +4,26 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.content.Context
-import android.graphics.BitmapFactory
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.kohutyan.gh_homework.dummy.DummyContent
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.location.LocationManager
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_website_list.*
-import kotlinx.android.synthetic.main.website_list_content.view.*
 import kotlinx.android.synthetic.main.website_list.*
+import kotlinx.android.synthetic.main.website_list_content.view.*
 
 
 class WebsiteListActivity : AppCompatActivity() {
@@ -35,6 +39,13 @@ class WebsiteListActivity : AppCompatActivity() {
         val channelId = "com.kohutyan.gh_homework"
         val description =  "Notification"
 
+
+
+        locBut.setOnClickListener { view ->
+            Snackbar.make(view, "In process", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
+
         notBut.setOnClickListener{
 
             val intent = Intent(this,WebsiteListActivity::class.java)
@@ -42,23 +53,30 @@ class WebsiteListActivity : AppCompatActivity() {
 
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 notificationChannel = NotificationChannel(channelId,description,NotificationManager.IMPORTANCE_HIGH)
                 notificationChannel.enableVibration(true)
                 notificationManager.createNotificationChannel(notificationChannel)
 
+
                 builder = Notification.Builder(this,channelId)
+                    .setContentTitle("Some notification")
+                    .setContentText("Pamagiti")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setLargeIcon(BitmapFactory.decodeResource(this.resources,R.mipmap.ic_launcher_round))
                     .setContentIntent(pendingIntent)
             }else{
 
                 builder = Notification.Builder(this)
+                    .setContentTitle("Some notification")
+                    .setContentText("Pamagiti")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setLargeIcon(BitmapFactory.decodeResource(this.resources,R.mipmap.ic_launcher_round))
                     .setContentIntent(pendingIntent)
             }
-            notificationManager.notify(1234,builder.build())
+            notificationManager.notify(1,builder.build())
         }
 
 
